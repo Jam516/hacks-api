@@ -4,3 +4,4 @@ Flask
 flask-cors
 pandas
 gunicorn
+psycopg2-binary==2.9.1

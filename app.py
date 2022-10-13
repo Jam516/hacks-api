@@ -13,26 +13,26 @@ config = {
 connect_url = os.environ.get("POSTGRESQL")
 engine = create_engine(connect_url)
 
-def create_app(test_config=None):
-    app = Flask(__name__)
-    app.config.from_mapping(config)
-    cache = Cache(app)
-    CORS(app)
+app = Flask(__name__)
+app.config.from_mapping(config)
+cache = Cache(app)
+CORS(app)
 
-    @app.after_request
-    def after_request(response):
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
-        response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PATCH,OPTIONS')
-        return response
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PATCH,OPTIONS')
+    return response
 
-    @app.route('/')
-    @cache.cached()
-    def hacks():
-        df = pd.read_sql_table(
-            'sheet1',
-            con=engine
-        )
-        output = df.to_json(orient='records')
-        return output
+@app.route('/')
+@cache.cached()
+def hacks():
+    df = pd.read_sql_table(
+        'sheet1',
+        con=engine
+    )
+    output = df.to_json(orient='records')
+    return output
 
-    return app
+if __name__ == '__main__':
+    app.run()
